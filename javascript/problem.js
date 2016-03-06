@@ -59,8 +59,7 @@ function bootstrapSpotifySearch(){
 function displayAlbumsAndTracks(event) {
   var appendToMe = $('#albums-and-tracks');
   var $artistId = $('li').attr('data-spotify-id');
-  var x = 0;
-  var albumRequest, albumUrl, dateRequest, dates, albumDate;
+  var albumRequest, albumUrl, dateRequest, dates;
 
   albumRequest = $.ajax( {
     type: "GET",
@@ -69,16 +68,13 @@ function displayAlbumsAndTracks(event) {
   });
 
   albumRequest.done(function(artist) {
+    var albumDate;
 
     artist.items.forEach(function(album) {
-      albumUrl = album.href;
-      var albumLi = $(`<li>${album.name}</li>`);
-
-      albumLi.attr('album-id', album.id);
-      appendToMe.append(albumLi);
-      getDate(albumUrl);
+      albumDate = getDate(album.href);
+      console.log(albumDate);
+      appendToMe.append(`<li>${album.name}, release date: ${albumDate}</li>`);
     })
-  });
 
     function getDate(albumUrl) {
       dateRequest = $.ajax( {
@@ -86,15 +82,12 @@ function displayAlbumsAndTracks(event) {
         url: albumUrl,
         dataType: 'json',
       });
-      var albumDate = $('#albums-and-tracks li');
       dateRequest.done(function(date) {
-        console.log(date);
-        dates = jsonar
-        // dates = date[x].release_date;
-        x += 1;
-        albumDate.append(`Release Date: ${dates}`);
+        dates = date.release_date;
       });
+      console.log(dates);
     }
+  });
 };
 
 
